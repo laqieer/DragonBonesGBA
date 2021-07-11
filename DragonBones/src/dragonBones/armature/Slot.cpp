@@ -11,6 +11,9 @@
 #include "../animation/Animation.h"
 #include "../event/EventObject.h"
 
+#include <tonc_types.h>
+#include "tonc_mgba.h"
+
 DRAGONBONES_NAMESPACE_BEGIN
 
 void Slot::_onClear()
@@ -116,6 +119,8 @@ void Slot::_updateDisplayData()
     _boundingBoxData = nullptr;
     _textureData = nullptr;
 
+    //mgba_printf(LOG_INFO, "_updateDisplayData: _displayIndex: %d, _displayDatas.size(): %d", _displayIndex, _displayDatas.size());
+
     if (_displayIndex >= 0)
     {
         if (_rawDisplayDatas != nullptr) 
@@ -133,6 +138,8 @@ void Slot::_updateDisplayData()
             _displayData = _displayDatas[_displayIndex];
         }
     }
+
+    //mgba_printf(LOG_INFO, "_updateDisplayData: _displayData: 0x%x", _displayData);
 
     // Update texture and mesh data.
     if (_displayData != nullptr)
@@ -172,10 +179,12 @@ void Slot::_updateDisplayData()
         if (_displayData->type == DisplayType::Image) 
         {
             _textureData = static_cast<ImageDisplayData*>(_displayData)->texture;
+            mgba_printf(LOG_INFO, "_updateDisplayData: type: image, _textureData: 0x%x", _textureData);
         }
         else if (_displayData->type == DisplayType::Mesh) 
         {
             _textureData = static_cast<MeshDisplayData*>(_displayData)->texture;
+            mgba_printf(LOG_INFO, "_updateDisplayData: type: mesh, _textureData: 0x%x", _textureData);
         }
     }
 
@@ -504,6 +513,8 @@ bool Slot::_setDisplayList(const std::vector<std::pair<void*, DisplayType>>& val
 
 void Slot::init(const SlotData* slotData, Armature* armatureValue, void* rawDisplay, void* meshDisplay)
 {
+    mgba_printf(LOG_INFO, "slot init: 0x%x", slotData);
+
     if (_slotData != nullptr)
     {
         return;

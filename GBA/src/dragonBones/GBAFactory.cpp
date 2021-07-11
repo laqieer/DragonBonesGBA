@@ -17,6 +17,7 @@
 
 #include <tonc_types.h>
 #include "gbfs.h"
+#include "tonc_mgba.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -73,6 +74,7 @@ DragonBonesData* GBAFactory::loadDragonBonesData(const std::string& filePath, co
 
     const GBFS_FILE *dat = find_first_gbfs_file((const void *)(&find_first_gbfs_file));
     const char *fp = (const char *)gbfs_get_obj(dat, filePath.c_str(), NULL);
+    mgba_printf(LOG_INFO, "%s: %s", filePath.c_str(), fp);
     return parseDragonBonesData(fp, name, 1.0f);
 }
 
@@ -94,6 +96,7 @@ TextureAtlasData* GBAFactory::loadTextureAtlasData(const std::string& filePath, 
 
     const GBFS_FILE *dat = find_first_gbfs_file((const void *)(&find_first_gbfs_file));
     const char *fp = (const char *)gbfs_get_obj(dat, filePath.c_str(), NULL);
+    mgba_printf(LOG_INFO, "%s: %s", filePath.c_str(), fp);
     return static_cast<GBATextureAtlasData*>(BaseFactory::parseTextureAtlasData(fp, atlasTexture, name, scale));
 }
 

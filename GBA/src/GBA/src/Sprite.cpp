@@ -18,7 +18,7 @@ namespace gba
             ori = origin;
             sprites[id] = this;
         }
-        mgba_printf(LOG_INFO, "id: %d", id);
+        mgba_printf(LOG_INFO, "Sprite: id: %d, texture: 0x%x", id, texture);
     }
 
     Sprite::Sprite(Texture *texture, IntRect *rectangle)
@@ -31,7 +31,7 @@ namespace gba
             ori = new Vector2i();
             sprites[id] = this;
         }
-        mgba_printf(LOG_INFO, "id: %d", id);
+        mgba_printf(LOG_INFO, "Sprite: id: %d, texture: 0x%x", id, texture);
     }
 
     Sprite::Sprite(Texture *texture)
@@ -44,7 +44,7 @@ namespace gba
             ori = new Vector2i();
             sprites[id] = this;
         }
-        mgba_printf(LOG_INFO, "id: %d", id);
+        mgba_printf(LOG_INFO, "Sprite: id: %d, texture: 0x%x", id, texture);
     }
 
     Sprite::~Sprite()

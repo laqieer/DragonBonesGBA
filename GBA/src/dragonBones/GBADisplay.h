@@ -21,6 +21,7 @@ DRAGONBONES_NAMESPACE_BEGIN
 class GBADisplay : public GBANode
 {
 public:
+    gba::Texture* texture = nullptr;
     gba::Sprite* sprite = nullptr;
 
 protected:

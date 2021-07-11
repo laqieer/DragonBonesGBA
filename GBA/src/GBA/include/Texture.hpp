@@ -10,7 +10,7 @@ namespace gba
     class Texture
     {
         public:
-            static Texture *textures[4];
+            static Texture *gTextures[4];
 
             std::string name;
             int id;

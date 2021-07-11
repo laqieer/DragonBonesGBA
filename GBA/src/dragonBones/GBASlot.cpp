@@ -11,6 +11,9 @@
 #include "GBATextureAtlasData.h"
 #include "GBATextureData.h"
 
+#include <tonc_types.h>
+#include <tonc_mgba.h>
+
 DRAGONBONES_NAMESPACE_BEGIN
 
 void GBASlot::_updateVisible()
@@ -87,12 +90,17 @@ void GBASlot::_updateFrame()
 
 	auto display = static_cast<GBADisplay*>(_renderDisplay);
 
-	if (_displayIndex >= 0 && _display != nullptr && currentTextureData != nullptr)
+    mgba_printf(LOG_INFO, "_updateFrame: _displayIndex: %d, _display: 0x%x, _textureData: 0x%x, texture: 0x%x", _displayIndex, _display, currentTextureData, currentTextureData->texture);
+
+	//if (_displayIndex >= 0 && _display != nullptr && currentTextureData != nullptr)
+    if (false)
 	{
+        // confusing: currentTextureData: 0x0, null: 0x0, not null: true, true ???
+        mgba_printf(LOG_INFO, "currentTextureData: 0x%x, null: 0x%x, not null: %s, %s", currentTextureData, nullptr, (currentTextureData != nullptr) ? "true" : "false", (_displayIndex >= 0 && _display != nullptr && currentTextureData != nullptr)? "true" : "false");
 		if (currentTextureData->texture != nullptr)
 		{
-			//if (currentVerticesData != nullptr) // Mesh
-			//{
+			if (currentVerticesData != nullptr) // Mesh
+			{
 			//	const auto data = currentVerticesData->data;
 			//	const auto intArray = data->intArray;
 			//	const auto floatArray = data->floatArray;
@@ -171,8 +179,8 @@ void GBASlot::_updateFrame()
 			//	{
 			//		_identityTransform();
 			//	}
-			//}
-			//else // Normal texture
+			}
+			else // Normal texture
 			{
 				const auto scale = currentTextureData->parent->scale * _armature->_armatureData->scale;
 				const auto height = (currentTextureData->rotated ? currentTextureData->region.width : currentTextureData->region.height) * scale;
@@ -180,7 +188,7 @@ void GBASlot::_updateFrame()
 
 				auto texRect =currentTextureData->region;
 
-				//display->texture = currentTextureData->texture;
+				display->texture = currentTextureData->texture;
 
 				//display->verticesDisplay.resize(4);
 				//display->verticesDisplay[0].texCoords = gba::Vector2f(texRect.x, 					texRect.y);
@@ -200,7 +208,10 @@ void GBASlot::_updateFrame()
 				//display->setColor(gba::Color::White);
 
                 gba::IntRect *region = new gba::IntRect((int)texRect.x, (int)texRect.y, (int)texRect.width, (int)texRect.height);
-                display->sprite = new gba::Sprite(currentTextureData->texture, region);
+                display->sprite = new gba::Sprite(display->texture, region);
+
+                mgba_printf(LOG_INFO, "display->sprite: texture: 0x%x, texRect: x %f y %f w %f h %f", display->texture, texRect.x, texRect.y, texRect.width, texRect.height);
+                mgba_printf(LOG_INFO, "display->sprite: texture: 0x%x, rect: x %d y %d w %d h %d", display->texture, region->getPosition().x, region->getPosition().y, region->getSize().x, region->getSize().y);
 			}
 
 			_visibleDirty = true;

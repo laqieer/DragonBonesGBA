@@ -8,13 +8,13 @@
 
 namespace gba
 {
-    Texture* Texture::textures[4] = { NULL };
+    Texture* Texture::gTextures[4] = { NULL };
 
     Texture::Texture(std::string filename)
     {
         name = filename;
 
-        for(id = 0; id < 4 && textures[id]; id++);
+        for(id = 0; id < 4 && gTextures[id]; id++);
         if(id < 4)
             loadFromFile(filename);
     }
@@ -22,7 +22,7 @@ namespace gba
     Texture::~Texture()
     {
         if(id < 4)
-            textures[id] = NULL;
+            gTextures[id] = NULL;
     }
 
     bool Texture::loadFromFile(std::string filename)
@@ -39,7 +39,7 @@ namespace gba
         memcpy(pal, fp, 32);
         LZ77UnCompVram(fp + 32, raw);
 
-        textures[id] = this;
+        gTextures[id] = this;
 
         return true; 
     }

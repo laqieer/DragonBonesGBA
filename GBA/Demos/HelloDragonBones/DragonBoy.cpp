@@ -10,6 +10,7 @@
 #include <dragonBones/GBAArmatureDisplay.h>
 
 #include "Texture.hpp"
+#include <dragonBones/GBATextureAtlasData.h>
 
 int main()
 {
@@ -20,20 +21,20 @@ int main()
 	float deltaTime = 1.f / 60;
 
 	gba::Texture texture("DragonBoy_tex.png");
-    mgba_printf(LOG_INFO, "texture: id %d", texture.id);
+    mgba_printf(LOG_INFO, "texture: 0x%x, id %d", &texture, texture.id);
 
 	dragonBones::GBAFactory factory;
 
 	factory.loadDragonBonesData("DragonBoy_ske.json");
-	factory.loadTextureAtlasData("DragonBoy_tex.json", &texture);
+	dragonBones::GBATextureAtlasData *textureAtlasData = dynamic_cast<dragonBones::GBATextureAtlasData *>(factory.loadTextureAtlasData("DragonBoy_tex.json", &texture));
 
-    mgba_printf(LOG_INFO, "factory: 0x%x", factory.get());
+    mgba_printf(LOG_INFO, "factory: 0x%x, textureAtlasData: 0x%x, _renderTexture: 0x%x", factory.get(), textureAtlasData, textureAtlasData->getRenderTexture());
 
 	auto armatureDisplay = new dragonBones::GBAArmatureDisplay("Dragon");
 	armatureDisplay->getAnimation()->play("walk");
 	armatureDisplay->setPosition({ 120.f, 0.f });
 
-    mgba_printf(LOG_INFO, "armatureDisplay: proxy: 0x%x, position: (%d, %d)", armatureDisplay->getArmatureProxy(), armatureDisplay->getPosition().x, armatureDisplay->getPosition().y);
+    mgba_printf(LOG_INFO, "armatureDisplay: proxy: 0x%x, position: (%d, %d)", armatureDisplay->getArmatureProxy(), (int)armatureDisplay->getPosition().x, (int)armatureDisplay->getPosition().y);
 
     irq_init(NULL);
     irq_enable(II_VBLANK);
