@@ -126,12 +126,14 @@ void GBAArmatureProxy::draw(gba::Vector2f position) const
     transform.x += position.x;
     transform.y += position.y;
 
+    int i = 0;
+
 	for (auto node : _nodes)
 	{
 		if (!node)
 			continue;
 
-		dynamic_cast<GBADisplay*>(node)->draw(&transform);
+		dynamic_cast<GBADisplay*>(node)->draw(&transform, i++);
 	}
 }
 

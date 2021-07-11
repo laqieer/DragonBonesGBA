@@ -41,14 +41,17 @@ public:
 	}
 
 //protected:
-	void draw(Transform *transform) const
+	void draw(Transform *transform, int id) const
 	{
         Transform trans(*transform);
         trans.add(_transform);
 
+        //sprite = gba::Sprite::sprites[id];
+
 		if (_visible)
 		{
-            sprite->draw(&trans);
+            //sprite->draw(&trans);
+            gba::Sprite::sprites[id]->draw(&trans);
 		}
 	}
 };

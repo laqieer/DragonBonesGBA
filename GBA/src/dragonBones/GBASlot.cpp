@@ -45,6 +45,7 @@ void GBASlot::_onUpdateDisplay()
 {
 	_renderDisplay = static_cast<GBANode*>(_display != nullptr ? _display : _rawDisplay);
 	_renderDisplay->setZOffset(_slotData->zOrder);
+    mgba_printf(LOG_INFO, "_onUpdateDisplay: _renderDisplay: 0x%x", _renderDisplay);
 }
 
 void GBASlot::_addDisplay()
