@@ -8,7 +8,7 @@
 #include <vector>
 
 #include <dragonBones/DragonBonesHeaders.h>
-#include <GBA/Graphics/Rect.hpp>
+#include <Rect.hpp>
 
 #include "GBANode.h"
 #include "GBAFactory.h"
@@ -27,7 +27,7 @@ protected:
 	Armature*				_armature = nullptr;
 	GBAEventDispatcher		_dispatcher;
 
-	sf::Vector2f			_position;
+	gba::Vector2f			_position;
 
 	std::vector<GBANode*>	_nodes;
 
@@ -57,12 +57,12 @@ public:
 	Animation* getAnimation() const override { return _armature->getAnimation(); }
 
 	void setVisible(bool visible) override;
-	void setColor(const sf::Color& color) override;
+	//void setColor(const gba::Color& color) override;
 
-	sf::FloatRect getBoundingBox() const override;
+	gba::IntRect getBoundingBox() const override;
 
-protected:
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+//protected:
+	void draw(gba::Vector2f position) const;
 
 };
 

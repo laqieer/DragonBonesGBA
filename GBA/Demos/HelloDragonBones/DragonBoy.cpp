@@ -3,47 +3,46 @@
  ** @license MIT License
  **/
 
-#include <GBA/Graphics.hpp>
+#include <tonc.h>
+#include "tonc_mgba.h"
 
 #include <dragonBones/GBAFactory.h>
 #include <dragonBones/GBAArmatureDisplay.h>
 
+#include "Texture.hpp"
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(1024, 768), "My window");
-	window.setFramerateLimit(60);
+    REG_DISPCNT = DCNT_MODE0 | DCNT_OBJ_2D | DCNT_OBJ;
+
+    OAM_CLEAR();
+
+	float deltaTime = 1.f / 60;
+
+	gba::Texture texture("DragonBoy_tex.png");
+    mgba_printf(LOG_INFO, "texture: id %d", texture.id);
 
 	dragonBones::GBAFactory factory;
-
-	sf::Texture texture;
-	texture.loadFromFile("DragonBoy_tex.png");
 
 	factory.loadDragonBonesData("DragonBoy_ske.json");
 	factory.loadTextureAtlasData("DragonBoy_tex.json", &texture);
 
+    mgba_printf(LOG_INFO, "factory: 0x%x", factory.get());
+
 	auto armatureDisplay = new dragonBones::GBAArmatureDisplay("Dragon");
 	armatureDisplay->getAnimation()->play("walk");
-	armatureDisplay->setPosition({ 512.f, 440.f });
+	armatureDisplay->setPosition({ 120.f, 0.f });
 
-	sf::Clock clock;
+    mgba_printf(LOG_INFO, "armatureDisplay: proxy: 0x%x, position: (%d, %d)", armatureDisplay->getArmatureProxy(), armatureDisplay->getPosition().x, armatureDisplay->getPosition().y);
 
-	while (window.isOpen())
+    irq_init(NULL);
+    irq_enable(II_VBLANK);
+
+	while (true)
 	{
-		float deltaTime = clock.restart().asSeconds();
-
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-		}
-
+        armatureDisplay->draw();
+        VBlankIntrWait();
 		factory.update(deltaTime);
-
-		window.clear();
-		window.draw(*armatureDisplay);
-		window.display();
 	}
 	
 	return 0;

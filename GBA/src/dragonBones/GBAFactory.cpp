@@ -5,11 +5,8 @@
 
 #include "GBAFactory.h"
 
-#include <fstream>
 #include <sstream>
 #include <memory>
-
-#include <GBA/Graphics.hpp>
 
 #include "GBASlot.h"
 #include "GBATextureData.h"
@@ -17,6 +14,9 @@
 #include "GBAArmatureProxy.h"
 #include "GBADisplay.h"
 #include "GBAEventDispatcher.h"
+
+#include <tonc_types.h>
+#include "gbfs.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -57,36 +57,44 @@ DragonBonesData* GBAFactory::loadDragonBonesData(const std::string& filePath, co
 			return existedData;
 	}
 
-	std::stringstream data;
+	//std::stringstream data;
 
-	std::ifstream json(filePath);
+	//std::ifstream json(filePath);
 
-	if (json.bad())
-		return nullptr;
+	//if (json.bad())
+	//	return nullptr;
 
-	data << json.rdbuf();
+	//data << json.rdbuf();
 
-	if (data.str().empty())
-		return nullptr;
+	//if (data.str().empty())
+	//	return nullptr;
 
-	return parseDragonBonesData(data.str().c_str(), name, 1.0f);
+	//return parseDragonBonesData(data.str().c_str(), name, 1.0f);
+
+    const GBFS_FILE *dat = find_first_gbfs_file((const void *)(&find_first_gbfs_file));
+    const char *fp = (const char *)gbfs_get_obj(dat, filePath.c_str(), NULL);
+    return parseDragonBonesData(fp, name, 1.0f);
 }
 
-TextureAtlasData* GBAFactory::loadTextureAtlasData(const std::string& filePath, sf::Texture* atlasTexture, const std::string& name, float scale)
+TextureAtlasData* GBAFactory::loadTextureAtlasData(const std::string& filePath, gba::Texture* atlasTexture, const std::string& name, float scale)
 {
-	std::stringstream data;
+	//std::stringstream data;
 
-	std::ifstream json(filePath);
+	//std::ifstream json(filePath);
 
-	if (json.bad())
-		return nullptr;
+	//if (json.bad())
+	//	return nullptr;
 
-	data << json.rdbuf();
+	//data << json.rdbuf();
 
-	if (data.str().empty())
-		return nullptr;
+	//if (data.str().empty())
+	//	return nullptr;
 
-	return static_cast<GBATextureAtlasData*>(BaseFactory::parseTextureAtlasData(data.str().c_str(), atlasTexture, name, scale));
+	//return static_cast<GBATextureAtlasData*>(BaseFactory::parseTextureAtlasData(data.str().c_str(), atlasTexture, name, scale));
+
+    const GBFS_FILE *dat = find_first_gbfs_file((const void *)(&find_first_gbfs_file));
+    const char *fp = (const char *)gbfs_get_obj(dat, filePath.c_str(), NULL);
+    return static_cast<GBATextureAtlasData*>(BaseFactory::parseTextureAtlasData(fp, atlasTexture, name, scale));
 }
 
 GBAArmatureProxy* GBAFactory::buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName, const std::string& skinName, const std::string& textureAtlasName) const
@@ -103,7 +111,7 @@ GBAArmatureProxy* GBAFactory::buildArmatureDisplay(const std::string& armatureNa
 	return nullptr;
 }
 
-sf::Texture* GBAFactory::getTextureDisplay(const std::string& textureName, const std::string& dragonBonesName) const
+gba::Texture* GBAFactory::getTextureDisplay(const std::string& textureName, const std::string& dragonBonesName) const
 {
 	const auto textureData = static_cast<GBATextureData*>(_getTextureData(dragonBonesName, textureName));
 	if (textureData != nullptr && textureData->texture != nullptr)
@@ -127,7 +135,7 @@ TextureAtlasData* GBAFactory::_buildTextureAtlasData(TextureAtlasData* textureAt
 	{
 		if (textureAtlas != nullptr)
 		{
-			textureAtlasData_->setRenderTexture(static_cast<sf::Texture*>(textureAtlas));
+			textureAtlasData_->setRenderTexture(static_cast<gba::Texture*>(textureAtlas));
 		}
 		else
 		{

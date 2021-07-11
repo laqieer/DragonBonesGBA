@@ -6,8 +6,6 @@
 
 #include "GBASlot.h"
 
-#include <GBA/Graphics.hpp>
-
 #include "GBAArmatureProxy.h"
 #include "GBADisplay.h"
 #include "GBATextureAtlasData.h"
@@ -22,49 +20,10 @@ void GBASlot::_updateVisible()
 
 void GBASlot::_updateBlendMode()
 {
-	if (_renderDisplay)
-	{
-		auto display = static_cast<GBADisplay*>(_renderDisplay);
-
-		switch (_blendMode)
-		{
-			case BlendMode::Normal:
-				display->blendMode = sf::BlendMode();
-				break;
-			case BlendMode::Add:
-				display->blendMode = sf::BlendAdd;
-				break;
-			case BlendMode::Multiply:
-				display->blendMode = sf::BlendMultiply;
-				break;
-			default:
-				display->blendMode = sf::BlendMode();
-				break;
-		}
-	}
-	else if (_childArmature)
-	{
-		for (const auto slot : _childArmature->getSlots())
-		{
-			slot->_blendMode = _blendMode;
-			slot->_updateBlendMode();
-		}
-	}
 }
 
 void GBASlot::_updateColor()
 {
-	if (_renderDisplay)
-	{
-		sf::Color color;
-
-		color.a = static_cast<uint8_t>(_colorTransform.alphaMultiplier * 255.f);
-		color.r = static_cast<uint8_t>(_colorTransform.redMultiplier * 255.f);
-		color.g = static_cast<uint8_t>(_colorTransform.greenMultiplier * 255.f);
-		color.b = static_cast<uint8_t>(_colorTransform.blueMultiplier * 255.f);
-
-		_renderDisplay->setColor(color);
-	}
 }
 
 void GBASlot::_initDisplay(void* value, bool isRetain)
@@ -132,88 +91,88 @@ void GBASlot::_updateFrame()
 	{
 		if (currentTextureData->texture != nullptr)
 		{
-			if (currentVerticesData != nullptr) // Mesh
-			{
-				const auto data = currentVerticesData->data;
-				const auto intArray = data->intArray;
-				const auto floatArray = data->floatArray;
-				const unsigned vertexCount = intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshVertexCount];
-				const unsigned triangleCount = intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshTriangleCount];
-				int vertexOffset = intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
+			//if (currentVerticesData != nullptr) // Mesh
+			//{
+			//	const auto data = currentVerticesData->data;
+			//	const auto intArray = data->intArray;
+			//	const auto floatArray = data->floatArray;
+			//	const unsigned vertexCount = intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshVertexCount];
+			//	const unsigned triangleCount = intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshTriangleCount];
+			//	int vertexOffset = intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
 
-				if (vertexOffset < 0)
-				{
-					vertexOffset += 65536;
-				}
+			//	if (vertexOffset < 0)
+			//	{
+			//		vertexOffset += 65536;
+			//	}
 
-				const unsigned uvOffset = vertexOffset + vertexCount * 2;
+			//	const unsigned uvOffset = vertexOffset + vertexCount * 2;
 
-				const auto& region = currentTextureData->region;
+			//	const auto& region = currentTextureData->region;
 
-				std::vector<sf::Vertex> vertices(vertexCount);
+			//	std::vector<gba::Vertex> vertices(vertexCount);
 
-				std::vector<std::vector<int>> verticesInTriagles;
+			//	std::vector<std::vector<int>> verticesInTriagles;
 
-				std::vector<uint16_t> vertexIndices(triangleCount * 3);
+			//	std::vector<uint16_t> vertexIndices(triangleCount * 3);
 
-				for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2)
-				{
-					const auto iH = i / 2;
+			//	for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2)
+			//	{
+			//		const auto iH = i / 2;
 
-					const auto x = floatArray[vertexOffset + i];
-					const auto y = floatArray[vertexOffset + i + 1];
-					auto u = floatArray[uvOffset + i];
-					auto v = floatArray[uvOffset + i + 1];
+			//		const auto x = floatArray[vertexOffset + i];
+			//		const auto y = floatArray[vertexOffset + i + 1];
+			//		auto u = floatArray[uvOffset + i];
+			//		auto v = floatArray[uvOffset + i + 1];
 
-					sf::Vertex vertexData;
-					vertexData.position = { x, y };
+			//		gba::Vertex vertexData;
+			//		vertexData.position = { x, y };
 
-					if (currentTextureData->rotated)
-					{
-						vertexData.texCoords.x = (region.x + (1.0f - v) * region.width);
-						vertexData.texCoords.y = (region.y + u * region.height);
-					}
-					else
-					{
-						vertexData.texCoords.x = (region.x + u * region.width);
-						vertexData.texCoords.y = (region.y + v * region.height);
-					}
+			//		if (currentTextureData->rotated)
+			//		{
+			//			vertexData.texCoords.x = (region.x + (1.0f - v) * region.width);
+			//			vertexData.texCoords.y = (region.y + u * region.height);
+			//		}
+			//		else
+			//		{
+			//			vertexData.texCoords.x = (region.x + u * region.width);
+			//			vertexData.texCoords.y = (region.y + v * region.height);
+			//		}
 
-					vertexData.color = sf::Color::White;
-					
-					vertices[iH] = vertexData;
-				}
+			//		vertexData.color = gba::Color::White;
+			//		
+			//		vertices[iH] = vertexData;
+			//	}
 
-				for (std::size_t i = 0; i < triangleCount * 3; ++i)
-				{
-					vertexIndices.push_back(intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshVertexIndices + i]);
-				}
+			//	for (std::size_t i = 0; i < triangleCount * 3; ++i)
+			//	{
+			//		vertexIndices.push_back(intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshVertexIndices + i]);
+			//	}
 
-				std::vector<sf::Vertex> verticesDisplay;
+			//	std::vector<gba::Vertex> verticesDisplay;
 
-				verticesInTriagles.resize(vertices.size());
+			//	verticesInTriagles.resize(vertices.size());
 
-				// sorting
-				for (unsigned int i = 0; i < vertexIndices.size(); i++)
-				{
-					verticesInTriagles[vertexIndices[i]].push_back(i);
-					verticesDisplay.push_back(vertices[vertexIndices[i]]);
-				}
+			//	// sorting
+			//	for (unsigned int i = 0; i < vertexIndices.size(); i++)
+			//	{
+			//		verticesInTriagles[vertexIndices[i]].push_back(i);
+			//		verticesDisplay.push_back(vertices[vertexIndices[i]]);
+			//	}
 
-				_textureScale = 1.f;
+			//	_textureScale = 1.f;
 
-				display->texture = currentTextureData->texture;
-				display->verticesDisplay = std::move(verticesDisplay);
-				display->verticesInTriagles = std::move(verticesInTriagles);
-				display->primitiveType = sf::PrimitiveType::Triangles;
+			//	display->texture = currentTextureData->texture;
+			//	display->verticesDisplay = std::move(verticesDisplay);
+			//	display->verticesInTriagles = std::move(verticesInTriagles);
+			//	display->primitiveType = gba::PrimitiveType::Triangles;
 
-				const auto isSkinned = currentVerticesData->weight != nullptr;
-				if (isSkinned)
-				{
-					_identityTransform();
-				}
-			}
-			else // Normal texture
+			//	const auto isSkinned = currentVerticesData->weight != nullptr;
+			//	if (isSkinned)
+			//	{
+			//		_identityTransform();
+			//	}
+			//}
+			//else // Normal texture
 			{
 				const auto scale = currentTextureData->parent->scale * _armature->_armatureData->scale;
 				const auto height = (currentTextureData->rotated ? currentTextureData->region.width : currentTextureData->region.height) * scale;
@@ -221,24 +180,27 @@ void GBASlot::_updateFrame()
 
 				auto texRect =currentTextureData->region;
 
-				display->texture = currentTextureData->texture;
+				//display->texture = currentTextureData->texture;
 
-				display->verticesDisplay.resize(4);
-				display->verticesDisplay[0].texCoords = sf::Vector2f(texRect.x, 					texRect.y);
-				display->verticesDisplay[1].texCoords = sf::Vector2f(texRect.x, 					texRect.y + texRect.height);
-				display->verticesDisplay[2].texCoords = sf::Vector2f(texRect.x + texRect.width, 	texRect.y);
-				display->verticesDisplay[3].texCoords = sf::Vector2f(texRect.x + texRect.width, 	texRect.y + texRect.height);
+				//display->verticesDisplay.resize(4);
+				//display->verticesDisplay[0].texCoords = gba::Vector2f(texRect.x, 					texRect.y);
+				//display->verticesDisplay[1].texCoords = gba::Vector2f(texRect.x, 					texRect.y + texRect.height);
+				//display->verticesDisplay[2].texCoords = gba::Vector2f(texRect.x + texRect.width, 	texRect.y);
+				//display->verticesDisplay[3].texCoords = gba::Vector2f(texRect.x + texRect.width, 	texRect.y + texRect.height);
 
 
-				float boundsWidth = static_cast<float>(std::abs(texRect.width));
-				float boundsheight = static_cast<float>(std::abs(texRect.height));
+				//float boundsWidth = static_cast<float>(std::abs(texRect.width));
+				//float boundsheight = static_cast<float>(std::abs(texRect.height));
 
-				display->verticesDisplay[0].position = sf::Vector2f(0.f, 0.f);
-				display->verticesDisplay[1].position = sf::Vector2f(0.f, boundsheight);
-				display->verticesDisplay[2].position = sf::Vector2f(boundsWidth, 0.f);
-				display->verticesDisplay[3].position = sf::Vector2f(boundsWidth, boundsheight);
+				//display->verticesDisplay[0].position = gba::Vector2f(0.f, 0.f);
+				//display->verticesDisplay[1].position = gba::Vector2f(0.f, boundsheight);
+				//display->verticesDisplay[2].position = gba::Vector2f(boundsWidth, 0.f);
+				//display->verticesDisplay[3].position = gba::Vector2f(boundsWidth, boundsheight);
 
-				display->setColor(sf::Color::White);
+				//display->setColor(gba::Color::White);
+
+                gba::IntRect *region = new gba::IntRect((int)texRect.x, (int)texRect.y, (int)texRect.width, (int)texRect.height);
+                display->sprite = new gba::Sprite(currentTextureData->texture, region);
 			}
 
 			_visibleDirty = true;
@@ -254,122 +216,125 @@ void GBASlot::_updateFrame()
 
 void GBASlot::_updateMesh()
 {
-	const auto scale = _armature->_armatureData->scale;
-	const auto& deformVertices = _deformVertices->vertices;
-	const auto& bones = _deformVertices->bones;
-	const auto verticesData = _deformVertices->verticesData;
-	const auto weightData = verticesData->weight;
+	//const auto scale = _armature->_armatureData->scale;
+	//const auto& deformVertices = _deformVertices->vertices;
+	//const auto& bones = _deformVertices->bones;
+	//const auto verticesData = _deformVertices->verticesData;
+	//const auto weightData = verticesData->weight;
 
-	const auto hasFFD = !deformVertices.empty();
-	const auto meshDisplay = static_cast<GBADisplay*>(_renderDisplay);
+	//const auto hasFFD = !deformVertices.empty();
+	//const auto meshDisplay = static_cast<GBADisplay*>(_renderDisplay);
 
 
-	if (weightData != nullptr)
-	{
-		const auto data = verticesData->data;
-		const auto intArray = data->intArray;
-		const auto floatArray = data->floatArray;
-		const auto vertexCount = (std::size_t)intArray[verticesData->offset + (unsigned)BinaryOffset::MeshVertexCount];
-		int weightFloatOffset = intArray[weightData->offset + (unsigned)BinaryOffset::WeigthFloatOffset];
+	//if (weightData != nullptr)
+	//{
+	//	const auto data = verticesData->data;
+	//	const auto intArray = data->intArray;
+	//	const auto floatArray = data->floatArray;
+	//	const auto vertexCount = (std::size_t)intArray[verticesData->offset + (unsigned)BinaryOffset::MeshVertexCount];
+	//	int weightFloatOffset = intArray[weightData->offset + (unsigned)BinaryOffset::WeigthFloatOffset];
 
-		if (weightFloatOffset < 0)
-		{
-			weightFloatOffset += 65536;
-		}
+	//	if (weightFloatOffset < 0)
+	//	{
+	//		weightFloatOffset += 65536;
+	//	}
 
-		for (
-			std::size_t i = 0, iD = 0, iB = weightData->offset + (unsigned)BinaryOffset::WeigthBoneIndices + bones.size(), iV = (std::size_t)weightFloatOffset, iF = 0;
-			i < vertexCount;
-			++i
-			)
-		{
-			const auto boneCount = (std::size_t)intArray[iB++];
-			auto xG = 0.0f, yG = 0.0f;
-			for (std::size_t j = 0; j < boneCount; ++j)
-			{
-				const auto boneIndex = (unsigned)intArray[iB++];
-				const auto bone = bones[boneIndex];
-				if (bone != nullptr)
-				{
-					const auto& matrix = bone->globalTransformMatrix;
-					const auto weight = floatArray[iV++];
-					auto xL = floatArray[iV++] * scale;
-					auto yL = floatArray[iV++] * scale;
+	//	for (
+	//		std::size_t i = 0, iD = 0, iB = weightData->offset + (unsigned)BinaryOffset::WeigthBoneIndices + bones.size(), iV = (std::size_t)weightFloatOffset, iF = 0;
+	//		i < vertexCount;
+	//		++i
+	//		)
+	//	{
+	//		const auto boneCount = (std::size_t)intArray[iB++];
+	//		auto xG = 0.0f, yG = 0.0f;
+	//		for (std::size_t j = 0; j < boneCount; ++j)
+	//		{
+	//			const auto boneIndex = (unsigned)intArray[iB++];
+	//			const auto bone = bones[boneIndex];
+	//			if (bone != nullptr)
+	//			{
+	//				const auto& matrix = bone->globalTransformMatrix;
+	//				const auto weight = floatArray[iV++];
+	//				auto xL = floatArray[iV++] * scale;
+	//				auto yL = floatArray[iV++] * scale;
 
-					if (hasFFD)
-					{
-						xL += deformVertices[iF++];
-						yL += deformVertices[iF++];
-					}
+	//				if (hasFFD)
+	//				{
+	//					xL += deformVertices[iF++];
+	//					yL += deformVertices[iF++];
+	//				}
 
-					xG += (matrix.a * xL + matrix.c * yL + matrix.tx) * weight;
-					yG += (matrix.b * xL + matrix.d * yL + matrix.ty) * weight;
-				}
-			}
+	//				xG += (matrix.a * xL + matrix.c * yL + matrix.tx) * weight;
+	//				yG += (matrix.b * xL + matrix.d * yL + matrix.ty) * weight;
+	//			}
+	//		}
 
-			auto& vertsDisplay = meshDisplay->verticesDisplay;
+	//		auto& vertsDisplay = meshDisplay->verticesDisplay;
 
-			for (auto vert : meshDisplay->verticesInTriagles[i])
-			{
-				auto& vertexPosition = vertsDisplay[vert].position;
-				vertexPosition = { xG, yG };
-			}
-		}
-	}
-	else if (hasFFD)
-	{
-		const auto data = verticesData->data;
-		const auto intArray = data->intArray;
-		const auto floatArray = data->floatArray;
-		const auto vertexCount = (std::size_t)intArray[verticesData->offset + (unsigned)BinaryOffset::MeshVertexCount];
-		int vertexOffset = (std::size_t)intArray[verticesData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
+	//		for (auto vert : meshDisplay->verticesInTriagles[i])
+	//		{
+	//			auto& vertexPosition = vertsDisplay[vert].position;
+	//			vertexPosition = { xG, yG };
+	//		}
+	//	}
+	//}
+	//else if (hasFFD)
+	//{
+	//	const auto data = verticesData->data;
+	//	const auto intArray = data->intArray;
+	//	const auto floatArray = data->floatArray;
+	//	const auto vertexCount = (std::size_t)intArray[verticesData->offset + (unsigned)BinaryOffset::MeshVertexCount];
+	//	int vertexOffset = (std::size_t)intArray[verticesData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
 
-		if (vertexOffset < 0)
-		{
-			vertexOffset += 65536;
-		}
+	//	if (vertexOffset < 0)
+	//	{
+	//		vertexOffset += 65536;
+	//	}
 
-		for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2)
-		{
-			const auto iH = i / 2;
-			const auto xG = floatArray[vertexOffset + i] * scale + deformVertices[i];
-			const auto yG = floatArray[vertexOffset + i + 1] * scale + deformVertices[i + 1];
+	//	for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2)
+	//	{
+	//		const auto iH = i / 2;
+	//		const auto xG = floatArray[vertexOffset + i] * scale + deformVertices[i];
+	//		const auto yG = floatArray[vertexOffset + i + 1] * scale + deformVertices[i + 1];
 
-			auto& vertsDisplay = meshDisplay->verticesDisplay;
+	//		auto& vertsDisplay = meshDisplay->verticesDisplay;
 
-			for (auto vert : meshDisplay->verticesInTriagles[iH])
-			{
-				auto& vertexPosition = vertsDisplay[vert].position;
-				vertexPosition = { xG, yG };
-			}
-		}
-	}
+	//		for (auto vert : meshDisplay->verticesInTriagles[iH])
+	//		{
+	//			auto& vertexPosition = vertsDisplay[vert].position;
+	//			vertexPosition = { xG, yG };
+	//		}
+	//	}
+	//}
 }
 
 void GBASlot::_identityTransform()
 {
-	_renderDisplay->setMatrix(Matrix(), sf::Vector2f(), _textureScale, _textureScale);
+	_renderDisplay->setMatrix(Transform(), gba::Vector2f(), _textureScale, _textureScale);
 }
 
 void GBASlot::_updateTransform()
 {
-	sf::Vector2f pos(
-		globalTransformMatrix.tx,
-		globalTransformMatrix.ty
-	);
+	//gba::Vector2f pos(
+	//	globalTransformMatrix.tx,
+	//	globalTransformMatrix.ty
+	//);
 
-	if (_renderDisplay == _rawDisplay || _renderDisplay == _meshDisplay)
-	{
-		pos.x -= globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY;
-		pos.y -= globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY;
-	}
-	else
-	{
-		pos.x -= globalTransformMatrix.a - globalTransformMatrix.c;
-		pos.y -= globalTransformMatrix.b - globalTransformMatrix.d;
-	}
+	//if (_renderDisplay == _rawDisplay || _renderDisplay == _meshDisplay)
+	//{
+	//	pos.x -= globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY;
+	//	pos.y -= globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY;
+	//}
+	//else
+	//{
+	//	pos.x -= globalTransformMatrix.a - globalTransformMatrix.c;
+	//	pos.y -= globalTransformMatrix.b - globalTransformMatrix.d;
+	//}
+    gba::Vector2f pos;
+    pos.x = 0;
+    pos.y = 0;
 
-	_renderDisplay->setMatrix(globalTransformMatrix, pos, _textureScale, _textureScale);
+	_renderDisplay->setMatrix(global, pos, _textureScale, _textureScale);
 }
 
 void GBASlot::_onClear()

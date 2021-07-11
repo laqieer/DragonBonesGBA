@@ -5,8 +5,6 @@
 
 #include "GBAArmatureProxy.h"
 
-#include <GBA/Graphics.hpp>
-
 #include "GBASlot.h"
 #include "GBADisplay.h"
 
@@ -71,13 +69,13 @@ void GBAArmatureProxy::dispose(bool disposeProxy)
 	}
 }
 
-sf::FloatRect GBAArmatureProxy::getBoundingBox() const
+gba::IntRect GBAArmatureProxy::getBoundingBox() const
 {
 	auto slots = _armature->getSlots();
 	bool isFirst = true;
 
-	sf::Vector2f min;
-	sf::Vector2f max;
+	gba::Vector2i min;
+	gba::Vector2i max;
 
 	for (const auto slot : _armature->getSlots())
 	{
@@ -103,7 +101,7 @@ sf::FloatRect GBAArmatureProxy::getBoundingBox() const
 		}
 	}
 
-	return sf::FloatRect(min, max - min);
+	return gba::IntRect(min, max - min);
 }
 
 void GBAArmatureProxy::setVisible(bool visible)
@@ -114,24 +112,26 @@ void GBAArmatureProxy::setVisible(bool visible)
 	}
 }
 
-void GBAArmatureProxy::setColor(const sf::Color& color)
-{
-	for (auto node : _nodes)
-	{
-		node->setColor(color);
-	}
-}
+//void GBAArmatureProxy::setColor(const gba::Color& color)
+//{
+//	for (auto node : _nodes)
+//	{
+//		node->setColor(color);
+//	}
+//}
 
-void GBAArmatureProxy::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void GBAArmatureProxy::draw(gba::Vector2f position) const
 {
-	states.transform *= this->_transform;
+	Transform transform = this->_transform;
+    transform.x += position.x;
+    transform.y += position.y;
 
 	for (auto node : _nodes)
 	{
 		if (!node)
 			continue;
 
-		target.draw(*node, states);
+		dynamic_cast<GBADisplay*>(node)->draw(&transform);
 	}
 }
 

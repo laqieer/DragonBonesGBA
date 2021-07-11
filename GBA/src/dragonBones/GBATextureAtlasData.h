@@ -6,7 +6,7 @@
 #pragma once
 
 #include <dragonBones/DragonBonesHeaders.h>
-#include <GBA/Graphics/Texture.hpp>
+#include <Texture.hpp>
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -15,7 +15,7 @@ class GBATextureAtlasData : public TextureAtlasData
 	BIND_CLASS_TYPE_B(GBATextureAtlasData);
 
 private:
-	sf::Texture* _renderTexture;
+	gba::Texture* _renderTexture;
 
 public:
 	GBATextureAtlasData();
@@ -23,9 +23,9 @@ public:
 
 	virtual TextureData* createTexture() const override;
 
-	sf::Texture* getRenderTexture() const { return _renderTexture; }
+	gba::Texture* getRenderTexture() const { return _renderTexture; }
 
-	void setRenderTexture(sf::Texture* value);
+	void setRenderTexture(gba::Texture* value);
 };
 
 DRAGONBONES_NAMESPACE_END

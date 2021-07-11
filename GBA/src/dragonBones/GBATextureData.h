@@ -9,7 +9,7 @@
 
 #include <dragonBones/DragonBonesHeaders.h>
 
-#include <GBA/Graphics/Sprite.hpp>
+#include <Sprite.hpp>
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -18,7 +18,7 @@ class GBATextureData : public TextureData
 	BIND_CLASS_TYPE_B(GBATextureData);
 
 public:
-	sf::Texture*			texture;
+	gba::Texture*			texture;
 
 public:
 	GBATextureData()
@@ -38,9 +38,9 @@ public:
 		TextureData::_onClear();
 	}
 
-	void setTexture(sf::Texture *value)
+	void setTexture(gba::Texture *value)
 	{
-		auto size = value->getSize();
+		auto size = value->size;
 
 		region.x = 0.f;
 		region.y = 0.f;

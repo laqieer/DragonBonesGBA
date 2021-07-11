@@ -7,10 +7,11 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include <dragonBones/DragonBonesHeaders.h>
 
-#include <GBA/Graphics/Texture.hpp>
+#include <Texture.hpp>
 
 #include "GBAEventDispatcher.h"
 
@@ -33,13 +34,13 @@ public:
 
 public:
 	DragonBonesData* loadDragonBonesData(const std::string& filePath, const std::string& name = "");
-	TextureAtlasData* loadTextureAtlasData(const std::string& filePath, sf::Texture* atlasTexture, const std::string& name = "", float scale = 1.0f);
+	TextureAtlasData* loadTextureAtlasData(const std::string& filePath, gba::Texture* atlasTexture, const std::string& name = "", float scale = 1.0f);
 	GBAArmatureProxy* buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName = "", const std::string& skinName = "", const std::string& textureAtlasName = "") const;
-	sf::Texture* getTextureDisplay(const std::string& textureName, const std::string& dragonBonesName = "") const;
+	gba::Texture* getTextureDisplay(const std::string& textureName, const std::string& dragonBonesName = "") const;
 
 	void addSoundEventListener(const std::function<void(EventObject*)>& listener)
 	{
-		_soundEventDispatcher->addDBEventListener(EventObject::SOUND_EVENT, listener);
+		//_soundEventDispatcher->addDBEventListener(EventObject::SOUND_EVENT, listener);
 	}
 
 	void update(float lastUpdate);

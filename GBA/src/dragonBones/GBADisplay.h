@@ -8,9 +8,9 @@
 
 #include <vector>
 
-#include <GBA/Graphics/Rect.hpp>
-#include <GBA/Graphics/Texture.hpp>
-#include <GBA/Graphics/VertexArray.hpp>
+#include <Rect.hpp>
+#include <Texture.hpp>
+#include <Sprite.hpp>
 
 #include <dragonBones/DragonBonesHeaders.h>
 
@@ -21,15 +21,7 @@ DRAGONBONES_NAMESPACE_BEGIN
 class GBADisplay : public GBANode
 {
 public:
-	const sf::Texture*			 	texture = nullptr;
-
-	std::vector<std::vector<int>>	verticesInTriagles;
-
-	std::vector<sf::Vertex>		 	verticesDisplay;
-
-	sf::BlendMode					blendMode;
-
-	sf::PrimitiveType				primitiveType = sf::PrimitiveType::TriangleStrip;
+    gba::Sprite* sprite = nullptr;
 
 protected:
 
@@ -38,53 +30,24 @@ public:
 	~GBADisplay() = default;
 
 public:
-	void setColor(const sf::Color& color) override
+	//void setColor(const gba::Color& color) override
+	//{
+	//}
+
+	gba::IntRect getBoundingBox() const override
 	{
-		for (auto& vert : verticesDisplay)
-		{
-			vert.color = color;
-		}
+  		return *(sprite->rect);
 	}
 
-	sf::FloatRect getBoundingBox() const override
+//protected:
+	void draw(Transform *transform) const
 	{
-		if (texture == nullptr)
-			return sf::FloatRect();
+        Transform trans(*transform);
+        trans.add(_transform);
 
-		if (verticesDisplay.empty())
-			return sf::FloatRect();
-
-		sf::Vector2f min = verticesDisplay[0].position;
-		sf::Vector2f max = verticesDisplay[0].position;
-
-		for (auto& vert : verticesDisplay)
-		{
-			min.x = std::min(min.x, vert.position.x);
-			min.y = std::min(min.y, vert.position.y);
-			max.x = std::max(max.x, vert.position.x);
-			max.y = std::max(max.y, vert.position.y);
-		}
-
-		sf::FloatRect rect(min, max - min);
-
-		sf::Transform matrix;
-		matrix.combine(_transform);
-		rect = matrix.transformRect(rect);
-
-		return rect;
-	}
-
-protected:
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const override
-	{
 		if (_visible)
 		{
-			states.blendMode = blendMode;
-			states.texture = texture;
-
-			states.transform.combine(_transform);
-
-			target.draw(&verticesDisplay[0], verticesDisplay.size(), primitiveType, states);
+            sprite->draw(&trans);
 		}
 	}
 };

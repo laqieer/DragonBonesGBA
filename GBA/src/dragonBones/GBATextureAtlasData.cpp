@@ -6,8 +6,8 @@
 
 #include <memory>
 
-#include <GBA/Graphics/Rect.hpp>
-#include <GBA/System/Vector2.hpp>
+#include <Rect.hpp>
+#include <Vector2.hpp>
 
 #include "GBATextureData.h"
 
@@ -23,7 +23,7 @@ GBATextureAtlasData::~GBATextureAtlasData()
 	_onClear();
 }
 
-void GBATextureAtlasData::setRenderTexture(sf::Texture* value)
+void GBATextureAtlasData::setRenderTexture(gba::Texture* value)
 {
 	if (_renderTexture == value)
 	{

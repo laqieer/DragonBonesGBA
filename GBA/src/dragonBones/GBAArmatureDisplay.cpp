@@ -5,8 +5,6 @@
 
 #include "GBAArmatureDisplay.h"
 
-#include <GBA/Graphics/RenderTarget.hpp>
-
 #include "GBAArmatureProxy.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
@@ -51,20 +49,18 @@ GBAArmatureProxy* GBAArmatureDisplay::getArmatureProxy() const
 	return _proxy;
 }
 
-sf::FloatRect GBAArmatureDisplay::getBoundingBox()
+gba::IntRect GBAArmatureDisplay::getBoundingBox()
 {
 	if (_proxy)
 		return _proxy->getBoundingBox();
 
-	return sf::FloatRect();
+	return gba::IntRect();
 }
 
-void GBAArmatureDisplay::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void GBAArmatureDisplay::draw() const
 {
-	states.transform.translate(_pos);
-
 	if (_proxy)
-		target.draw(*_proxy, states);
+		_proxy->draw(_pos);
 }
 
 DRAGONBONES_NAMESPACE_END

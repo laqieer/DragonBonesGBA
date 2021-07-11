@@ -32,3 +32,10 @@
 *.app
 
 .DS_Store
+
+*.gba
+*.elf
+*.sav
+*.gbfs
+build/
+
