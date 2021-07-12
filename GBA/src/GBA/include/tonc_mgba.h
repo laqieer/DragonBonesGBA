@@ -9,35 +9,46 @@
 #ifndef TONC_MGBA
 #define TONC_MGBA
 
+
+#include <stdarg.h>
+#include <stdio.h>
 #include "tonc_types.h"
 
 // --------------------------------------------------------------------
-// MACROS 
+// STRUCTS
 // --------------------------------------------------------------------
 
-#define LOG_FATAL               (u32) 0x100
-#define LOG_ERR                 (u32) 0x101
-#define LOG_WARN                (u32) 0x102
-#define LOG_INFO                (u32) 0x103
-#define LOG_MAX_CHARS_PER_LINE  (u32) 256
-#define REG_LOG_STR             (char*) 0x4FFF600
-#define REG_LOG_LEVEL           *(vu16*) 0x4FFF700
+typedef enum LogLevel {
+	LOG_FATAL                   = 0x100,
+	LOG_ERR                     = 0x101,
+	LOG_WARN                    = 0x102,
+	LOG_INFO                    = 0x103
+} LogLevel;
+
+// --------------------------------------------------------------------
+// MACROS
+// --------------------------------------------------------------------
+
 #define REG_LOG_ENABLE          *(vu16*) 0x4FFF780
+#define REG_LOG_LEVEL           *(vu16*) 0x4FFF700
 
 // --------------------------------------------------------------------
-// PROTOTYPES 
+// INLINES
 // --------------------------------------------------------------------
 
-#ifdef __cplusplus 
-extern "C"{
-#endif
+//! Outputs \a fmt formatted with varargs to mGBA's logger with \a level priority
+static inline void mgba_printf(LogLevel lvl, const char* fmt, ...) {
+	REG_LOG_ENABLE = 0xC0DE;
+	REG_LOG_LEVEL = lvl;
 
-void mgba_log(const u32 level, const char* str);
-void mgba_printf(const u32 level, const char* str, ...);
+	va_list args;
+	va_start(args, fmt);
 
-#ifdef __cplusplus
+	char* const log = (char*) 0x4FFF600;
+	vsnprintf(log, 0x100, fmt, args);
+
+	va_end(args);
 }
-#endif
 
 #endif // TONC_MGBA
 
