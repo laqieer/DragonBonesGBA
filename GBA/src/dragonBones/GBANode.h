@@ -20,12 +20,26 @@ protected:
 
 	int _zOffset = 0;
 
+    float _pivotX = 0.5;
+    float _pivotY = 0.5;
+
 public:
 	GBANode() = default;
 	virtual ~GBANode() = default;
 
 	void setZOffset(int zOffset) { _zOffset = zOffset; }
 	int getZOffset() const { return _zOffset; }
+
+    void setPivot(float x, float y)
+    {
+        _pivotX = x;
+        _pivotY = y;
+    }
+
+	void setTransform(const Transform& globalTransform)
+    {
+        _transform = globalTransform;
+    }
 
 	void setMatrix(const Transform& globalTransform, const gba::Vector2f& offset, float scaleX, float scaleY)
 	{

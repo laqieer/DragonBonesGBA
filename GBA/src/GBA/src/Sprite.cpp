@@ -8,7 +8,7 @@ namespace gba
 {
     Sprite* Sprite::sprites[32] = { NULL };
 
-    Sprite::Sprite(Texture *texture, IntRect *rectangle, Vector2i *origin)
+    Sprite::Sprite(Texture *texture, IntRect *rectangle, Vector2f *origin)
     {
         for(id = 0; id < 32 && sprites[id]; id++);
         if(id < 32)
@@ -28,7 +28,7 @@ namespace gba
         {
             tex = texture;
             rect = rectangle;
-            ori = new Vector2i();
+            ori = new Vector2f();
             sprites[id] = this;
         }
         mgba_printf(LOG_INFO, "Sprite: id: %d, texture: 0x%x", id, texture);
@@ -41,7 +41,7 @@ namespace gba
         {
             tex = texture;
             rect = new IntRect(0, 0, 64, 64);
-            ori = new Vector2i();
+            ori = new Vector2f();
             sprites[id] = this;
         }
         mgba_printf(LOG_INFO, "Sprite: id: %d, texture: 0x%x", id, texture);
@@ -53,11 +53,21 @@ namespace gba
             sprites[id] = NULL;
     }
 
+    void Sprite::setOrigin(float x, float y)
+    {
+        //FIXME: convert pivot to origin
+        mgba_printf(LOG_INFO, "setOrigin: pivotX: %.2f, pivotY: %.2f", x, y);
+        //ori->x = rect->getSize().x * (x + 0.5);
+        //ori->y = rect->getSize().y * (y + 0.5);
+        ori->x = x;
+        ori->y = y;
+    }
+
     void Sprite::draw(dragonBones::Transform *transform)
     {
         OBJ_ATTR obj;
 
-        mgba_printf(LOG_INFO, "draw: w %d, h: %d, x: %d, y: %d", rect->getSize().x, rect->getSize().y, (int)transform->x, (int)transform->y);
+        mgba_printf(LOG_INFO, "draw: w %d, h: %d, x: %.2f, y: %.2f, origin: (%.2f, %.2f), rotation: %.2f, scaleX: %.2f, scaleY: %.2f", rect->getSize().x, rect->getSize().y, transform->x, transform->y, ori->x, ori->y, transform->rotation, transform->scaleX, transform->scaleY);
 
         switch (rect->getSize().y + 100 * rect->getSize().x)
         {

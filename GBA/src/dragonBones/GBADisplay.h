@@ -51,6 +51,7 @@ public:
 		if (_visible)
 		{
             //sprite->draw(&trans);
+            gba::Sprite::sprites[id]->setOrigin(_pivotX, _pivotY);
             gba::Sprite::sprites[id]->draw(&trans);
 		}
 	}

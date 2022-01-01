@@ -93,11 +93,11 @@ void GBASlot::_updateFrame()
 
     mgba_printf(LOG_INFO, "_updateFrame: _displayIndex: %d, _display: 0x%x, _textureData: 0x%x, texture: 0x%x", _displayIndex, _display, currentTextureData, currentTextureData->texture);
 
-	//if (_displayIndex >= 0 && _display != nullptr && currentTextureData != nullptr)
-    if (false)
+	if (_displayIndex >= 0 && _display != nullptr && currentTextureData != nullptr)
+    //if (false)
 	{
         // confusing: currentTextureData: 0x0, null: 0x0, not null: true, true ???
-        mgba_printf(LOG_INFO, "currentTextureData: 0x%x, null: 0x%x, not null: %s, %s", currentTextureData, nullptr, (currentTextureData != nullptr) ? "true" : "false", (_displayIndex >= 0 && _display != nullptr && currentTextureData != nullptr)? "true" : "false");
+        //mgba_printf(LOG_INFO, "currentTextureData: 0x%x, null: 0x%x, not null: %s, %s", currentTextureData, nullptr, (currentTextureData != nullptr) ? "true" : "false", (_displayIndex >= 0 && _display != nullptr && currentTextureData != nullptr)? "true" : "false");
 		if (currentTextureData->texture != nullptr)
 		{
 			if (currentVerticesData != nullptr) // Mesh
@@ -211,7 +211,7 @@ void GBASlot::_updateFrame()
                 gba::IntRect *region = new gba::IntRect((int)texRect.x, (int)texRect.y, (int)texRect.width, (int)texRect.height);
                 display->sprite = new gba::Sprite(display->texture, region);
 
-                mgba_printf(LOG_INFO, "display->sprite: texture: 0x%x, texRect: x %f y %f w %f h %f", display->texture, texRect.x, texRect.y, texRect.width, texRect.height);
+                mgba_printf(LOG_INFO, "display->sprite: texture: 0x%x, texRect: x %.2f y %.2f w %.2f h %.2f", display->texture, texRect.x, texRect.y, texRect.width, texRect.height);
                 mgba_printf(LOG_INFO, "display->sprite: texture: 0x%x, rect: x %d y %d w %d h %d", display->texture, region->getPosition().x, region->getPosition().y, region->getSize().x, region->getSize().y);
 			}
 
@@ -327,26 +327,37 @@ void GBASlot::_identityTransform()
 
 void GBASlot::_updateTransform()
 {
+    //FIXME: convert transform with pivot
+    //mgba_printf(LOG_INFO, "_updateTransform: global: x: %.2f, y: %.2f, skew: %.2f, rotation: %.2f, scaleX: %.2f, scaleY: %.2f", global.x, global.y, global.skew, global.rotation, global.scaleX, global.scaleY);
 	//gba::Vector2f pos(
 	//	globalTransformMatrix.tx,
 	//	globalTransformMatrix.ty
 	//);
 
+    //gba::Vector2f pos;
+    //pos.x = 0;
+    //pos.y = 0;
+    Transform globalTransform;
+    globalTransform.fromMatrix(globalTransformMatrix);
 	//if (_renderDisplay == _rawDisplay || _renderDisplay == _meshDisplay)
 	//{
-	//	pos.x -= globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY;
-	//	pos.y -= globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY;
+	//	globalTransform.x -= globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY;
+	//	globalTransform.y -= globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY;
 	//}
 	//else
 	//{
-	//	pos.x -= globalTransformMatrix.a - globalTransformMatrix.c;
-	//	pos.y -= globalTransformMatrix.b - globalTransformMatrix.d;
+	//	globalTransform.x -= globalTransformMatrix.a - globalTransformMatrix.c;
+	//	globalTransform.y -= globalTransformMatrix.b - globalTransformMatrix.d;
 	//}
-    gba::Vector2f pos;
-    pos.x = 0;
-    pos.y = 0;
+    globalTransform.scaleX *= _textureScale;
+    globalTransform.scaleY *= _textureScale;
 
-	_renderDisplay->setMatrix(global, pos, _textureScale, _textureScale);
+    mgba_printf(LOG_INFO, "_updateTransform: globalTransform: x: %.2f, y: %.2f, pivot: (%.2f, %.2f), skew: %.2f, rotation: %.2f, scaleX: %.2f, scaleY: %.2f", globalTransform.x, globalTransform.y, _pivotX, _pivotY, globalTransform.skew, globalTransform.rotation, globalTransform.scaleX, globalTransform.scaleY);
+
+	_renderDisplay->setPivot(_pivotX, _pivotY);
+	//_renderDisplay->setPivot(0, 0);
+	//_renderDisplay->setMatrix(globalTransform, pos, _textureScale, _textureScale);
+    _renderDisplay->setTransform(globalTransform);
 }
 
 void GBASlot::_onClear()

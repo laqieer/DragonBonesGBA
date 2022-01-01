@@ -1,5 +1,7 @@
 #include "BaseFactory.h"
 
+#include <tonc_mgba.h>
+
 DRAGONBONES_NAMESPACE_BEGIN
 
 JSONDataParser BaseFactory::_jsonParser;
@@ -7,6 +9,9 @@ BinaryDataParser BaseFactory::_binaryParser;
 
 TextureData* BaseFactory::_getTextureData(const std::string& textureAtlasName, const std::string& textureName) const
 {
+    //for (const auto& x : _textureAtlasDataMap) {
+    //    mgba_printf(LOG_INFO, "_getTextureData: _textureAtlasDataMap: key: %s", x.first.c_str());
+    //}
     const auto iterator = _textureAtlasDataMap.find(textureAtlasName);
     if (iterator != _textureAtlasDataMap.end())
     {
@@ -37,6 +42,8 @@ TextureData* BaseFactory::_getTextureData(const std::string& textureAtlasName, c
             }
         }
     }
+
+    mgba_printf(LOG_ERR, "_getTextureData: Error: fail to get texture data for %s: %s", textureAtlasName.c_str(), textureName.c_str());
 
     return nullptr;
 }
@@ -229,6 +236,7 @@ std::pair<void*, DisplayType> BaseFactory::_getSlotDisplay(const BuildArmaturePa
             {
                 imageDisplayData->texture = _getTextureData(dataPackage->textureAtlasName, displayData->path);
             }
+            mgba_printf(LOG_INFO, "_getSlotDisplay: _getTextureData: path: %s, texture: 0x%x", displayData->path.c_str(), imageDisplayData->texture);
 
             display.first = slot->_rawDisplay;
             display.second = DisplayType::Image;
@@ -246,6 +254,7 @@ std::pair<void*, DisplayType> BaseFactory::_getSlotDisplay(const BuildArmaturePa
             {
                 meshDisplayData->texture = _getTextureData(dataPackage->textureAtlasName, meshDisplayData->path);
             }
+            mgba_printf(LOG_INFO, "_getSlotDisplay: _getTextureData: path: %s, texture: 0x%x", meshDisplayData->path.c_str(), meshDisplayData->texture);
 
             if (_isSupportMesh())
             {

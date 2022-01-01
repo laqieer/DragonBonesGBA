@@ -15,14 +15,15 @@ namespace gba
 
             Texture *tex;
             IntRect *rect;
-            Vector2i *ori;
+            Vector2f *ori;
             int id;
 
             Sprite(Texture *texture);
             Sprite(Texture *texture, IntRect *rectangle);
-            Sprite(Texture *texture, IntRect *rectangle, Vector2i *origin);
+            Sprite(Texture *texture, IntRect *rectangle, Vector2f *origin);
             ~Sprite();
 
+            void setOrigin(float x, float y);
             void draw(dragonBones::Transform *transform);
     };
 }

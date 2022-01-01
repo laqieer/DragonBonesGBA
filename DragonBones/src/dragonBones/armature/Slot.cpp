@@ -179,12 +179,12 @@ void Slot::_updateDisplayData()
         if (_displayData->type == DisplayType::Image) 
         {
             _textureData = static_cast<ImageDisplayData*>(_displayData)->texture;
-            mgba_printf(LOG_INFO, "_updateDisplayData: type: image, _textureData: 0x%x", _textureData);
+            mgba_printf(LOG_INFO, "_updateDisplayData: type: image, _textureData: 0x%x, name: %s, path: %s", _textureData, _displayData->name.c_str(), _displayData->path.c_str());
         }
         else if (_displayData->type == DisplayType::Mesh) 
         {
             _textureData = static_cast<MeshDisplayData*>(_displayData)->texture;
-            mgba_printf(LOG_INFO, "_updateDisplayData: type: mesh, _textureData: 0x%x", _textureData);
+            mgba_printf(LOG_INFO, "_updateDisplayData: type: mesh, _textureData: 0x%x, name: %s, path: %s", _textureData, _displayData->name.c_str(), _displayData->path.c_str());
         }
     }
 

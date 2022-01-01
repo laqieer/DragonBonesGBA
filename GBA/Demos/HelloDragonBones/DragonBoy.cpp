@@ -32,7 +32,7 @@ int main()
 
 	auto armatureDisplay = new dragonBones::GBAArmatureDisplay("Dragon");
 	armatureDisplay->getAnimation()->play("walk");
-	armatureDisplay->setPosition({ 120.f, 0.f });
+	armatureDisplay->setPosition({ 120.f, 80.f });
 
     mgba_printf(LOG_INFO, "armatureDisplay: proxy: 0x%x, position: (%d, %d)", armatureDisplay->getArmatureProxy(), (int)armatureDisplay->getPosition().x, (int)armatureDisplay->getPosition().y);
 
@@ -45,6 +45,8 @@ int main()
         VBlankIntrWait();
 		factory.update(deltaTime);
 	}
+
+    while(true);
 	
 	return 0;
 }
